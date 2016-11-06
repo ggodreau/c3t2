@@ -1,12 +1,12 @@
 #!/usr/bin/python
-# New comment
 import sys
 import re
 
 def main(argv):
 
 	# Define regex patterns
-	httpNewPage = re.compile(r"^http://.*?(\s|\n)")
+	#httpNewPage = re.compile(r"^http://.*?(\s|\n)")
+	httpNewPage = re.compile(r"^WARC-Target-URI: (https?://.*?(\s|\n))")
 
 	iphoneRe = re.compile(r"iphone.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)")
 	samsungRe = re.compile(r"samsung.*?galaxy.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)")
@@ -59,8 +59,9 @@ def main(argv):
 			print >>sys.stderr, "error({0})".format(e)
 			continue
 
-		if not line:
-			break
+#		if not line:
+#			print "breaking!!"
+#			break
 
 		# Check to see if the current line is a page header
 		pageHeaderMatch = httpNewPage.search(line)
@@ -244,10 +245,11 @@ def main(argv):
 						("1" if googleCount>0 else "0")
 
  			# Assign the new url header match value to a variable
-			currentUrl = pageHeaderMatch.group().strip().replace(",", "")
-			currentUrl = currentUrl.replace("http://", "")
-			currentUrl = currentUrl.replace("/", "-")
-			currentUrl = currentUrl.replace("\(|\)", "")
+#			currentUrl = pageHeaderMatch
+			currentUrl = "\"" + pageHeaderMatch.group(1).strip().replace(",", "") + "\""
+#			currentUrl = currentUrl.replace("http://", "")
+#			currentUrl = currentUrl.replace("/", "-")
+#			currentUrl = currentUrl.replace("\(|\)", "")
 			pageBody = ""
 		else:
 			pageBody = pageBody + line
