@@ -8,13 +8,13 @@ def main(argv):
 	#httpNewPage = re.compile(r"^http://.*?(\s|\n)")
 	httpNewPage = re.compile(r"^WARC-Target-URI: (https?://.*?(\s|\n))")
 
-	iphoneRe = re.compile(r"iphone.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)")
-	samsungRe = re.compile(r"samsung.*?galaxy.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)")
-	sonyRe = re.compile(r"sony.*?xperia.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)")
-	nokiaRe = re.compile(r"nokia.*?lumina.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)")
-	htcRe = re.compile(r"htc.*?phone.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)")
-	iosRe = re.compile(r"\sios.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)")
-	googleRe = re.compile(r"google.*?android.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)")
+	iphoneRe = re.compile(r" iphone.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)", re.IGNORECASE)
+	samsungRe = re.compile(r" samsung.*?galaxy.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)", re.IGNORECASE)
+	sonyRe = re.compile(r" sony.*?xperia.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)", re.IGNORECASE)
+	nokiaRe = re.compile(r" nokia.*?lumina.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)", re.IGNORECASE)
+	htcRe = re.compile(r" htc.*?phone.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)", re.IGNORECASE)
+	iosRe = re.compile(r"\sios.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)", re.IGNORECASE)
+	googleRe = re.compile(r" google.*?android.*?(review|critique|look\sat|in\sdepth|analysis|evaluat|assess)", re.IGNORECASE)
 
 	# For Sentiment
 
@@ -47,21 +47,20 @@ def main(argv):
 	# Initialize the current url and pageBody variables
 	currentUrl = ""
 	pageBody = ""
-
+	brokenLineCounter = 0
 
 	# For each line in the stream
-	while 1:
+	while True:
 		try:
 			line = sys.stdin.readline()
 		except EOFError:
+			print brokenLineCounter
 			break
 		except Exception as e:
 			print >>sys.stderr, "error({0})".format(e)
 			continue
-
-#		if not line:
-#			print "breaking!!"
-#			break
+		if not line:
+			break
 
 		# Check to see if the current line is a page header
 		pageHeaderMatch = httpNewPage.search(line)
