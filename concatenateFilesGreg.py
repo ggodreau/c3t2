@@ -24,7 +24,7 @@ def main():
     df.to_csv('concatenated_factors.csv', columns=headerLabels[1:], quotechar='"', sep=',',header=True)
 
     # cleanup
-    os.remove('combinedFile.csv')
+    #os.remove('combinedFile.csv')
     print "Sucessfully processed " + str(fileCount) + " files"
     sys.exit()
 
@@ -38,18 +38,20 @@ def combineFiles(file):
     outfile = open('combinedFile.csv', 'w+')
     global fileCount
     fileCount = 0
+    httpRe = re.compile(r'.*?[http]')
     for dirname, dirnames, filenames in os.walk(file):
         # For each sub folder
         for subdirname in dirnames:
             subdirpath = os.path.join(dirname, subdirname)
             for fileName in os.listdir(subdirpath):
                 fileCount += 1
+                print "Processing " + fileName + "..."
                 with open(subdirpath + "/" + fileName) as infile:
                     for line in infile:
-                        #line = re.sub(r'\s*?\(',r',',line)
-                        #line = re.sub(r'\)',r'',line)
-                        outfile.write(line)
-                    return None
+                        # make sure we're reading reducer output files
+                        if len(httpRe.findall(line)) > 0:
+                            outfile.write(line)
+        return None
 
 if __name__ == "__main__":
     main()
