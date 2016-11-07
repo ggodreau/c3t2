@@ -17,7 +17,11 @@ def main():
                 # Print the JSON file header markup
                 outfile.write("[\n")
                 lineCounter = 0
+                # Check for non-URL entries in input file
 		for line in infile:
+                    if len(line) < 10:
+                        print "Short line in input file, please check/rid your input file of extra blank lines. Exiting..."
+                        sys.exit()
                     # Parse the elements out of the line
                     linesplit=line.split("/")
                     segmentnumber = linesplit[6]
@@ -44,7 +48,7 @@ def main():
                     # Print the JSON file footer markup
                     outfile.write("]\n")
                     lineCounter += 1
-                print "\nSuccessfully wrote", lineCounter, "lines to output file:", outputFileName
+                exitMessage()
 
 
 def getUserInputFile():
@@ -66,6 +70,8 @@ def detectExistingOutputFile(file):
     else:
         return False
 
+def exitMessage():
+    print "\nSuccessfully wrote", lineCounter, "lines to output file:", outputFileName
 
 if __name__ == "__main__":
         main()
