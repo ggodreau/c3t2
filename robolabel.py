@@ -6,12 +6,21 @@ import sys
 #import os
 
 def main():
-    alpha = []
-    alpha = ['i', 'j', 'k']
-    newcol = 'newcolname'
-    colnames = ['id', 'googleperunc', 'samsunggalaxy']
-    sumCol(alpha, colnames, newcol)
-#    df = pd.read_csv(getUserInputFile(), delimiter=',')
+
+#    alpha = []
+#    alpha = ['i', 'j', 'k']
+#    newcol = 'newcolname'
+#    colnames = ['id', 'googleperunc', 'samsunggalaxy']
+#    sumCol(alpha, colnames, newcol)
+    coltest = ['id', 'googleperunc', 'samsunggalaxy']
+    df = pd.read_csv(getUserInputFile(), delimiter=',')
+    global colIndex
+    colIndex = {}
+    for i, j in zip(df.columns.values, range(0,len(df.columns.values))):
+        colIndex[i] = j
+#    print df.ix[:,colIndex.get(coltest[0])]
+
+    sumCol(coltest)
 #    for i, j, k in zip(df['id'], df['googleperunc'], df['samsunggalaxy']):
 #        df['newcol'] = i+j+k
 #    print df
@@ -39,18 +48,46 @@ def getUserInputFile():
         file = "./concatenated_factors.csv"
     return file
 
+def sumCol(colnames):
+    df = pd.read_csv('./concatenated_factors.csv', delimiter=',')
+    #for i, j, k in zip(*colnames
+    colIndiciesToParse = []
+    for i in range(0,len(colnames)):
+        #print colIndex.get(colnames[i])
+        colIndiciesToParse.append(colIndex.get(colnames[i]))
+    print colIndiciesToParse
+
+    for i in colIndiciesToParse:
+        if i == 0:
+            df['newcolname'] = df.ix[:,i]
+        if i > 0:
+            df['newcolname'] = df['newcolname'] + df.ix[:,i]
+    print df['newcolname']
+
+"""
 def sumCol(alpha, colnames, newcolname):
     df = pd.read_csv('./concatenated_factors.csv', delimiter=',')
     print "colnames before:", colnames
 #    print df[colnames]
     colnames =  map(lambda x: 'df[\'' + x + '\']', colnames)
-    print "colnames after:", colnames
+
+    print type(colnames)
+    print colnames[-1][-1]
+#    colnames[-1] = colnames[-1][:-1]
+    print "COLNAMES =", colnames
     print colnames[0], colnames[1], colnames[2]
-    for i, j, k in zip(*colnames):
-    #for i, j, k in zip(df['id'], df['googleperunc'], df['samsunggalaxy']):
+    for i in colnames:
+        print i
+    colnames += map(lambda x: 'df[\'' + x + '\']', colnames[-1])
+
+    for i, j, k in colnames:
+#    for i, j, k in zip("df['id']", "df['googleperunc']", "df['samsunggalaxy']"):
+      #  print i
+     #   print j
+    #    print k
         df['newcolname'] = i + j + k
     print df
- 
+"""
 
 if __name__ == "__main__":
     main()
