@@ -10,20 +10,15 @@ def main():
     setIdx()
 
     galaxySentIdx = ['samsunggalaxy']
+    outputColLabel = ['galaxySentiment']
     galaxySentFactors = ['samsungcampos', 'samsungcamneg', 'samsungcamunc',
         'samsungdispos', 'samsungdisneg', 'samsungdisunc', 'samsungperpos',
         'samsungperneg', 'samsungperunc', 'googleperpos', 'googleperneg',
         'googleperunc']
 
-#    coltest = ['id', 'googleperunc', 'samsunggalaxy']
-
-#    df = pd.read_csv(file, delimiter=',')
-#    global colIndex
-#    colIndex = {}
-#    for i, j in zip(df.columns.values, range(0,len(df.columns.values))):
-#        colIndex[i] = j
-
-    print sumCol(galaxySentFactors)
+    df2 = sumCol(galaxySentIdx, galaxySentFactors, outputColLabel)
+    for i, r in zip(df2['galaxySentiment'], df2['samsungcampos']):
+        print i + r
 #    print colIndex
 #    print getWeight(coltest)
 #    print getIdx('samsunggalaxy')
@@ -36,7 +31,7 @@ def getUserInputFile():
         file = "./concatenated_factors.csv"
     return file
 
-def sumCol(colnames):
+def sumCol(sentIdx, colnames, sentimentColName):
     df = pd.read_csv(file, delimiter=',')
     #for i, j, k in zip(*colnames
     colIndiciesToParse = []
@@ -46,10 +41,17 @@ def sumCol(colnames):
     for i, j in zip(colIndiciesToParse, range(0,len(colIndiciesToParse))):
         print "i =", i
         if j == 0:
-            df['newcolname'] = df.ix[:,i]
+            df[sentimentColName[0]] = df.ix[:,i]
         if j > 0:
-            df['newcolname'] = df['newcolname'] + df.ix[:,i]
-    #print df['newcolname']
+            df[sentimentColName[0]] = df[sentimentColName[0]] + df.ix[:,i]
+#    df[sentimentColName[0]] = df[sentimentColName[0]] * df.ix[:,colIndex.get(sentIdx[0])]
+
+    for i, j, k in zip(df[sentimentColName[0]], df.ix[:,colIndex.get(sentIdx[0])], df.ix[:,0]):
+        if j == 0:
+            print "k =", k
+            df.iloc[k][sentimentColName[0]] = 0
+
+   #print df['newcolname']
     return df
 #    print df
 
