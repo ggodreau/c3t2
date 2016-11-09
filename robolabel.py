@@ -7,40 +7,20 @@ import sys
 
 def main():
 
-#    alpha = []
-#    alpha = ['i', 'j', 'k']
-#    newcol = 'newcolname'
-#    colnames = ['id', 'googleperunc', 'samsunggalaxy']
-#    sumCol(alpha, colnames, newcol)
+    getUserInputFile()
+    setWeight()
+    galaxySentIdx = ['samsunggalaxy']
+    galaxySentCols = ['googleandroid']
+
     coltest = ['id', 'googleperunc', 'samsunggalaxy']
-    df = pd.read_csv(getUserInputFile(), delimiter=',')
+    df = pd.read_csv(file, delimiter=',')
     global colIndex
     colIndex = {}
     for i, j in zip(df.columns.values, range(0,len(df.columns.values))):
         colIndex[i] = j
-#    print df.ix[:,colIndex.get(coltest[0])]
 
-    sumCol(coltest)
-    setWeight()
-#    for i, j, k in zip(df['id'], df['googleperunc'], df['samsunggalaxy']):
-#        df['newcol'] = i+j+k
-#    print df
-
-    #headerLabels = ['url','iphone','samsunggalaxy','sonyxperia','nokialumina','htcphone','ios','googleandroid','iphonecampos','samsungcampos','sonycampos','nokiacampos','htccampos','iphonecamneg','samsungcamneg','sonycamneg','nokiacamneg','htccamneg','iphonecamunc','samsungcamunc','sonycamunc','nokiacamunc','htccamunc','iphonedispos','samsungdispos','sonydispos','nokiadispos','htcdispos','iphonedisneg','samsungdisneg','sonydisneg','nokiadisneg','htcdisneg','iphonedisunc','samsungdisunc','sonydisunc','nokiadisunc','htcdisunc','iphoneperpos','samsungperpos','sonyperpos','nokiaperpos','htcperpos','iphoneperneg','samsungperneg','sonyperneg','nokiaperneg','htcperneg','iphoneperunc','samsungperunc','sonyperunc','nokiaperunc','htcperunc','iosperpos','googleperpos','iosperneg','googleperneg','iosperunc','googleperunc']
-    #df.columns = headerLabels
-    #df.index.name = 'id'
-    #for i in df['googleperunc']:
-    #    df.ix[:,"googleperunc"]=i.rstrip('\)').replace(" ", "")
-    #for i in df['iphone']:
-    #    df.ix[:,'iphone']=i.lstrip('\(')
-
-    # output factor and url files
-    #df.to_csv('concatenated_websites.csv', columns=headerLabels[:1], quotechar='"', sep=',',header=True)
-    #df.to_csv('concatenated_factors.csv', columns=headerLabels[1:], quotechar='"', sep=',',header=True)
-
-    # cleanup
-    #os.remove('combinedFile.csv')
-    #print "Sucessfully processed " + str(fileCount) + " files"
+#    sumCol(coltest)
+    print getWeight(coltest)
     sys.exit()
 
 def getUserInputFile():
@@ -60,18 +40,25 @@ def sumCol(colnames):
     #print colIndiciesToParse
 
     for i in colIndiciesToParse:
+        print "i =", i
         if i == 0:
             df['newcolname'] = df.ix[:,i]
         if i > 0:
             df['newcolname'] = df['newcolname'] + df.ix[:,i]
     #print df['newcolname']
-
+    print colIndex[20]
 
 def getWeight(index):
-    pass
+    weights = []
+    for i in index:
+        weights.append(weightDict[i])
+    return weights
+
 def setWeight():
     df = pd.read_csv(file, delimiter=',')
+    #initialize column indicies, set all weights to 0
     weightList = [0] * len(df.columns.values)
+    global weightDict
     weightDict = {}
     for i, j in zip(df.columns.values, weightList):
         weightDict[i] = j
@@ -116,33 +103,6 @@ def setWeight():
     weightDict['iosperunc'] = 1
     weightDict['googleperunc'] = 1
 
-    print weightDict
-
-
-"""
-def sumCol(alpha, colnames, newcolname):
-    df = pd.read_csv('./concatenated_factors.csv', delimiter=',')
-    print "colnames before:", colnames
-#    print df[colnames]
-    colnames =  map(lambda x: 'df[\'' + x + '\']', colnames)
-
-    print type(colnames)
-    print colnames[-1][-1]
-#    colnames[-1] = colnames[-1][:-1]
-    print "COLNAMES =", colnames
-    print colnames[0], colnames[1], colnames[2]
-    for i in colnames:
-        print i
-    colnames += map(lambda x: 'df[\'' + x + '\']', colnames[-1])
-
-    for i, j, k in colnames:
-#    for i, j, k in zip("df['id']", "df['googleperunc']", "df['samsunggalaxy']"):
-      #  print i
-     #   print j
-    #    print k
-        df['newcolname'] = i + j + k
-    print df
-"""
 
 if __name__ == "__main__":
     main()
