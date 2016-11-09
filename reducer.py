@@ -92,4 +92,4 @@ for line in sys.stdin:
 for url in frequencyCount.keys():
 #    print '{0}'.format(frequencyCount[url])
 #     print '%s' % ( frequencyCount[url] )  #doesnt work
-    print '%s\t%s'% ( url, frequencyCount[url] )
+    print '%s,%s'% ( url, frequencyCount[url] )
