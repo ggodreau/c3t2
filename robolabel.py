@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import pandas as pd
+import numpy as np
 import random
 import sys
 
@@ -12,22 +13,31 @@ def main():
     setIdx()
     random.seed()
 
+    # calculate sentiment for galaxy
     galaxySentIdx = ['samsunggalaxy']
-    outputColLabel = ['galaxySentiment']
+    outputColLabelGal = ['galaxySentiment']
     galaxySentFactors = ['samsungcampos', 'samsungcamneg', 'samsungcamunc',
         'samsungdispos', 'samsungdisneg', 'samsungdisunc', 'samsungperpos',
         'samsungperneg', 'samsungperunc', 'googleperpos', 'googleperneg',
         'googleperunc']
 
-    dfGalaxy = sumCol(galaxySentIdx, galaxySentFactors, outputColLabel)
-    print dfGalaxy.ix[:,outputColLabel[0]]
+    dfGalaxy = sumCol(galaxySentIdx, galaxySentFactors, outputColLabelGal).ix[:,outputColLabelGal[0]]
 
-    
-#    for i, r in zip(df2['galaxySentiment'], df2['samsungcampos']):
-#        print i + r
-#    print colIndex
-#    print getWeight(coltest)
-#    print getIdx('samsunggalaxy')
+    # calculate sentiment for iphone
+    iphoneSentIdx = ['iphone']
+    outputColLabelIp = ['iphoneSentiment']
+    iphoneSentFactors = ['iphonecampos', 'iphonecamneg', 'iphonecamunc',
+        'iphonedispos', 'iphonedisneg', 'iphonedisunc', 'iphoneperpos',
+        'iphoneperneg', 'iphoneperunc', 'iosperpos', 'iosperneg',
+        'iosperunc']
+
+    dfIphone = sumCol(iphoneSentIdx, iphoneSentFactors, outputColLabelIp).ix[:,outputColLabelIp[0]]
+
+    # concatenate galaxy and iphone dataframes, write to file
+    sentiment = pd.concat([dfGalaxy, dfIphone], axis=1)
+    sentiment.to_csv('./sentiment.csv')
+
+    print "All tasks successful, output file is \'sentiment.csv\'"
     sys.exit()
 
 def getUserInputFile():
