@@ -8,6 +8,7 @@ import sys
 def main():
 
     # initialize global variables
+    disable_pandas_warnings()
     getUserInputFile()
     setWeight()
     setIdx()
@@ -21,7 +22,7 @@ def main():
         'samsungperneg', 'samsungperunc', 'googleperpos', 'googleperneg',
         'googleperunc']
 
-    dfGalaxy = sumCol(galaxySentIdx, galaxySentFactors, outputColLabelGal).ix[:,outputColLabelGal[0]]
+    dfGalaxy = roboLabel(galaxySentIdx, galaxySentFactors, outputColLabelGal).ix[:,outputColLabelGal[0]]
 
     # calculate sentiment for iphone
     iphoneSentIdx = ['iphone']
@@ -31,48 +32,56 @@ def main():
         'iphoneperneg', 'iphoneperunc', 'iosperpos', 'iosperneg',
         'iosperunc']
 
-    dfIphone = sumCol(iphoneSentIdx, iphoneSentFactors, outputColLabelIp).ix[:,outputColLabelIp[0]]
+    dfIphone = roboLabel(iphoneSentIdx, iphoneSentFactors, outputColLabelIp).ix[:,outputColLabelIp[0]]
 
     # concatenate galaxy and iphone dataframes, write to file
     sentiment = pd.concat([dfGalaxy, dfIphone], axis=1)
+    sentiment.index.name = 'id'
     sentiment.to_csv('./sentiment.csv')
 
     print "All tasks successful, output file is \'sentiment.csv\'"
     sys.exit()
 
 def getUserInputFile():
+    # read input from user, file is global
     global file
     file = raw_input("Enter input file (leave blank for './concatenated_factors'): ")
     if file == "":
         file = "./concatenated_factors.csv"
     return file
 
-def sumCol(sentIdx, colnames, sentimentColName):
+def roboLabel(sentIdx, colnames, sentimentColName):
+    # input target device (sentIdx), features (colnames), and resultant 
+    # sentiment column header (sentimentColName), returns a dataframe
+    # appended with robo-labeled sentiment. Positive values are positive
+    # sentiment, negative values are negative. Minor noise is added.
+    # Note that the value of sentIdx must be non-zero for a sentiment result
+    # to be returned.
     df = pd.read_csv(file, delimiter=',')
     colIndiciesToParse = []
     for i in range(0,len(colnames)):
         colIndiciesToParse.append(colIndex.get(colnames[i]))
     for i, j, k in zip(colIndiciesToParse, range(0,len(colIndiciesToParse)), colnames):
         if j == 0:
-            print "i = ", i
-#            print "LOOP WEIGHT =", getWeight(k)
             df[sentimentColName[0]] = df.ix[:,i] * getWeight(k)
         if j > 0:
             df[sentimentColName[0]] = df[sentimentColName[0]] + (df.ix[:,i] * getWeight(k))
 
-    # zero sentiment values where sentIdx == 0, add noise
+    # zero sentiment values where sentIdx == 0 (nobody talked about the device), add noise
     for i, j, k in zip(df[sentimentColName[0]], df.ix[:,colIndex.get(sentIdx[0])], df.ix[:,0]):
         if j == 0:
-#            df.iloc[k,sentimentColName[0]] = 0
+            # following line should get fixed in future version to resolve warning
             df.iloc[k][sentimentColName[0]] = 0
         else:
             df.iloc[k][sentimentColName[0]] = df.iloc[k][sentimentColName[0]] + random.randrange(-2,2,1)
     return df
 
 def getIdx(colname):
+    # input string column name, returns dataframe col index num
     return colIndex[colname]
 
 def setIdx():
+    # creates dictionary of key/value of column name/column index
     df = pd.read_csv(file, delimiter=',')
     global colIndex
     colIndex = {}
@@ -80,9 +89,11 @@ def setIdx():
         colIndex[i] = j
 
 def getWeight(colname):
+    # input string column name, returns the weight applied to the sentiment
     return weightDict.get(colname)
 
 def setWeight():
+    # assigns weights to factors within feature matrix, this is configurable
     df = pd.read_csv(file, delimiter=',')
     #initialize column indicies, set all weights to 0
     weightList = [0] * len(df.columns.values)
@@ -131,7 +142,11 @@ def setWeight():
     weightDict['iosperunc'] = 1
     weightDict['googleperunc'] = 1
 
-    print "DIS WEIGHT", weightDict['iosperneg']
+def disable_pandas_warnings():
+    # disable warning raised in roboLabel function (not an issue)
+    import warnings
+    warnings.filterwarnings('ignore')
+
 if __name__ == "__main__":
     main()
 
