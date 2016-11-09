@@ -2,25 +2,31 @@
 
 import pandas as pd
 import sys
-#import re
-#import os
 
 def main():
 
     getUserInputFile()
     setWeight()
+    setIdx()
+
     galaxySentIdx = ['samsunggalaxy']
-    galaxySentCols = ['googleandroid']
+    galaxySentFactors = ['samsungcampos', 'samsungcamneg', 'samsungcamunc',
+        'samsungdispos', 'samsungdisneg', 'samsungdisunc', 'samsungperpos',
+        'samsungperneg', 'samsungperunc', 'googleperpos', 'googleperneg',
+        'googleperunc']
 
-    coltest = ['id', 'googleperunc', 'samsunggalaxy']
-    df = pd.read_csv(file, delimiter=',')
-    global colIndex
-    colIndex = {}
-    for i, j in zip(df.columns.values, range(0,len(df.columns.values))):
-        colIndex[i] = j
+#    coltest = ['id', 'googleperunc', 'samsunggalaxy']
 
-#    sumCol(coltest)
-    print getWeight(coltest)
+#    df = pd.read_csv(file, delimiter=',')
+#    global colIndex
+#    colIndex = {}
+#    for i, j in zip(df.columns.values, range(0,len(df.columns.values))):
+#        colIndex[i] = j
+
+    print sumCol(galaxySentFactors)
+#    print colIndex
+#    print getWeight(coltest)
+#    print getIdx('samsunggalaxy')
     sys.exit()
 
 def getUserInputFile():
@@ -31,22 +37,31 @@ def getUserInputFile():
     return file
 
 def sumCol(colnames):
-    df = pd.read_csv('./concatenated_factors.csv', delimiter=',')
+    df = pd.read_csv(file, delimiter=',')
     #for i, j, k in zip(*colnames
     colIndiciesToParse = []
     for i in range(0,len(colnames)):
         #print colIndex.get(colnames[i])
         colIndiciesToParse.append(colIndex.get(colnames[i]))
-    #print colIndiciesToParse
-
-    for i in colIndiciesToParse:
+    for i, j in zip(colIndiciesToParse, range(0,len(colIndiciesToParse))):
         print "i =", i
-        if i == 0:
+        if j == 0:
             df['newcolname'] = df.ix[:,i]
-        if i > 0:
+        if j > 0:
             df['newcolname'] = df['newcolname'] + df.ix[:,i]
     #print df['newcolname']
-    print colIndex[20]
+    return df
+#    print df
+
+def getIdx(colname):
+    return colIndex[colname]
+
+def setIdx():
+    df = pd.read_csv(file, delimiter=',')
+    global colIndex
+    colIndex = {}
+    for i, j in zip(df.columns.values, range(0,len(df.columns.values))):
+        colIndex[i] = j
 
 def getWeight(index):
     weights = []
