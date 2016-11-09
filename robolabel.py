@@ -1,13 +1,16 @@
 #!/usr/bin/python
 
 import pandas as pd
+import random
 import sys
 
 def main():
 
+    # initialize global variables
     getUserInputFile()
     setWeight()
     setIdx()
+    random.seed()
 
     galaxySentIdx = ['samsunggalaxy']
     outputColLabel = ['galaxySentiment']
@@ -16,9 +19,12 @@ def main():
         'samsungperneg', 'samsungperunc', 'googleperpos', 'googleperneg',
         'googleperunc']
 
-    df2 = sumCol(galaxySentIdx, galaxySentFactors, outputColLabel)
-    for i, r in zip(df2['galaxySentiment'], df2['samsungcampos']):
-        print i + r
+    dfGalaxy = sumCol(galaxySentIdx, galaxySentFactors, outputColLabel)
+    print dfGalaxy.ix[:,outputColLabel[0]]
+
+    
+#    for i, r in zip(df2['galaxySentiment'], df2['samsungcampos']):
+#        print i + r
 #    print colIndex
 #    print getWeight(coltest)
 #    print getIdx('samsunggalaxy')
@@ -33,27 +39,25 @@ def getUserInputFile():
 
 def sumCol(sentIdx, colnames, sentimentColName):
     df = pd.read_csv(file, delimiter=',')
-    #for i, j, k in zip(*colnames
     colIndiciesToParse = []
     for i in range(0,len(colnames)):
-        #print colIndex.get(colnames[i])
         colIndiciesToParse.append(colIndex.get(colnames[i]))
-    for i, j in zip(colIndiciesToParse, range(0,len(colIndiciesToParse))):
-        print "i =", i
+    for i, j, k in zip(colIndiciesToParse, range(0,len(colIndiciesToParse)), colnames):
         if j == 0:
-            df[sentimentColName[0]] = df.ix[:,i]
+            print "i = ", i
+#            print "LOOP WEIGHT =", getWeight(k)
+            df[sentimentColName[0]] = df.ix[:,i] * getWeight(k)
         if j > 0:
-            df[sentimentColName[0]] = df[sentimentColName[0]] + df.ix[:,i]
-#    df[sentimentColName[0]] = df[sentimentColName[0]] * df.ix[:,colIndex.get(sentIdx[0])]
+            df[sentimentColName[0]] = df[sentimentColName[0]] + (df.ix[:,i] * getWeight(k))
 
+    # zero sentiment values where sentIdx == 0, add noise
     for i, j, k in zip(df[sentimentColName[0]], df.ix[:,colIndex.get(sentIdx[0])], df.ix[:,0]):
         if j == 0:
-            print "k =", k
+#            df.iloc[k,sentimentColName[0]] = 0
             df.iloc[k][sentimentColName[0]] = 0
-
-   #print df['newcolname']
+        else:
+            df.iloc[k][sentimentColName[0]] = df.iloc[k][sentimentColName[0]] + random.randrange(-2,2,1)
     return df
-#    print df
 
 def getIdx(colname):
     return colIndex[colname]
@@ -65,11 +69,8 @@ def setIdx():
     for i, j in zip(df.columns.values, range(0,len(df.columns.values))):
         colIndex[i] = j
 
-def getWeight(index):
-    weights = []
-    for i in index:
-        weights.append(weightDict[i])
-    return weights
+def getWeight(colname):
+    return weightDict.get(colname)
 
 def setWeight():
     df = pd.read_csv(file, delimiter=',')
@@ -120,7 +121,7 @@ def setWeight():
     weightDict['iosperunc'] = 1
     weightDict['googleperunc'] = 1
 
-
+    print "DIS WEIGHT", weightDict['iosperneg']
 if __name__ == "__main__":
     main()
 
