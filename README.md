@@ -22,11 +22,11 @@ To run the Mapper.py file locally, use the following syntax to place the output 
 Use (locally):
 
 ```python
-cat CC-MAIN-XXX.ec2.internal.warc.wet | python Mapper.py > out_mapper.txt
+cat <CC-MAIN-XXX.ec2.internal.warc.wet> | python Mapper.py > out_mapper.txt
 ```
 to determine the number of rows in the output file:
 ```bash
-wc -l out.txt
+wc -l out_mapper.txt
 ```
 reducer.py
 ---
