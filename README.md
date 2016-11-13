@@ -7,7 +7,11 @@ Note the dependent libraries in requirements.txt.
 
 createJsonFiles.py
 ---
-This script takes a CR+LF delimited list of paths to warc.wet.gz files within AWS and outputs a json file that can be passed to the AWS CLI within a hadoop job step.
+This script takes a CR+LF delimited list of paths to warc.wet.gz files within AWS and outputs a json file that can be passed to the AWS CLI within a hadoop job step. Here's an example of a warc.wet.gz file that would be appropriate to be fed into this script:
+
+```
+s3://commoncrawl/crawl-data/CC-MAIN-2016-36/segments/1471982290442.1/wet/CC-MAIN-20160823195810-00000-ip-10-153-172-175.ec2.internal.warc.wet.gz
+```
 
 Use:
 ```bash
