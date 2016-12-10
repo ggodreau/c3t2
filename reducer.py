@@ -90,6 +90,5 @@ for line in sys.stdin:
 # write the tuples to stdout
 # Note: they are unsorted
 for url in frequencyCount.keys():
-#    print '{0}'.format(frequencyCount[url])
-#     print '%s' % ( frequencyCount[url] )  #doesnt work
-    print '%s,%s'% ( url, frequencyCount[url] )
+    print '%s, %s' % (url, str(frequencyCount[url]).rstrip('\)').lstrip('\('))
+
