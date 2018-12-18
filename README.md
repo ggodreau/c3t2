@@ -1,5 +1,4 @@
-# c3t2
-Course 3 Task 2 updates
+# Hadoop Streaming in AWS EMR
 
 This is a collection of scripts to map/reduce and process a hadoop streaming job within AWS run against common crawl textData files.
 
